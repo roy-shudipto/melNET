@@ -2,13 +2,14 @@ import os
 import tensorflow as tf
 import numpy as np
 import cv2
+import csv
 
 SCALAR_RED = (0.0, 0.0, 255.0)
 SCALAR_BLUE = (255.0, 0.0, 0.0)
 
 
 #######################################################################################################################
-def main(test_path, weight_path, save_performance, show_detection):
+def main(test_path, weight_path, save_performance, show_detection, ground_truth, save_dir):
 
     print("starting program . . .")
 
@@ -54,6 +55,17 @@ def main(test_path, weight_path, save_performance, show_detection):
         return
     # end if
 
+    # Creating a csv file
+    if save_performance:
+        result_path = save_dir + '/result_' + ground_truth + '.csv'
+        f = open(result_path, 'w')
+        f.write('FIlE NAME,')
+        for class_name in classifications:
+            f.write(str(class_name).upper())
+            f.write(',')
+        f.write('Prediction, Truth, Match\n')
+
+
     with tf.Session() as sess:
         # for each file in the test images directory . . .
         for fileName in os.listdir(TEST_IMAGES_DIR):
@@ -94,6 +106,20 @@ def main(test_path, weight_path, save_performance, show_detection):
             # the first prediction, which is the most likely prediction (they were sorted descending above)
             onMostLikelyPrediction = True
             # for each prediction . . .
+
+            # Writing result on csv File
+            if save_performance:
+                f.write(fileName)
+                f.write(',')
+                for predVal in predictions[0]:
+                    f.write(str(predVal))
+                    f.write(',')
+                prediction = classifications[sortedPredictions[0]]
+                match = 0
+                if prediction == ground_truth:
+                    match = 1
+                f.write(str(prediction)+','+str(ground_truth)+','+str(match)+'\n')
+
             for prediction in sortedPredictions:
                 strClassification = classifications[prediction]
 
@@ -114,25 +140,24 @@ def main(test_path, weight_path, save_performance, show_detection):
                     # write the result on the image
                     writeResultOnImage(openCVImage, strClassification + ", " + "{0:.2f}".format(scoreAsAPercent) + "% confidence")
                     # finally we can show the OpenCV image
-                    cv2.imshow(fileName, openCVImage)
+                    if show_detection:
+                        cv2.imshow(fileName, openCVImage)
+                        # pause
+                        cv2.waitKey(1000)
+                        # after a key is pressed, close the current window to prep for the next time around
+                        cv2.destroyAllWindows()
                     # mark that we've show the most likely prediction at this point so the additional information in
                     # this if statement does not show again for this image
                     onMostLikelyPrediction = False
                 # end if
 
                 # for any prediction, show the confidence as a ratio to five decimal places
-                print(strClassification + " (" +  "{0:.5f}".format(confidence) + ")")
+                print(strClassification + " (" + "{0:.5f}".format(confidence) + ")")
             # end for
-
-            # pause until a key is pressed so the user can see the current image (shown above) and the prediction info
-            if show_detection:
-                cv2.waitKey(1000)
-                # after a key is pressed, close the current window to prep for the next time around
-                cv2.destroyAllWindows()
-            else:
-                continue
         # end for
     # end with
+    if save_performance:
+        f.close()
 
     # write the graph to file so we can view with TensorBoard
     '''tfFileWriter = tf.summary.FileWriter(os.getcwd())
