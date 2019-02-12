@@ -138,7 +138,9 @@ def main(test_path, weight_path, save_performance, show_detection, ground_truth,
                     # show the result to std out
                     print("the object appears to be a " + strClassification + ", " + "{0:.2f}".format(scoreAsAPercent) + "% confidence")
                     # write the result on the image
-                    writeResultOnImage(openCVImage, strClassification + ", " + "{0:.2f}".format(scoreAsAPercent) + "% confidence")
+                    writeResultOnImage(openCVImage, "File Name: " + fileName + "\nPrediction: " + strClassification +
+                                       " (" + "{0:.2f}".format(scoreAsAPercent) + "% confidence) \nGround Truth: " +
+                                       ground_truth)
                     # finally we can show the OpenCV image
                     if show_detection:
                         cv2.imshow(fileName, openCVImage)
@@ -199,8 +201,8 @@ def writeResultOnImage(openCVImage, resultText):
     fontFace = cv2.FONT_HERSHEY_TRIPLEX
 
     # chose the font size and thickness as a fraction of the image size
-    fontScale = 1.0
-    fontThickness = 2
+    fontScale = 0.5
+    fontThickness = 1.0
 
     # make sure font thickness is an integer, if not, the OpenCV functions that use this may crash
     fontThickness = int(fontThickness)
@@ -211,12 +213,15 @@ def writeResultOnImage(openCVImage, resultText):
     textSize, baseline = cv2.getTextSize(resultText, fontFace, fontScale, fontThickness)
     textSizeWidth, textSizeHeight = textSize
 
-    # calculate the lower left origin of the text area based on the text area center, width, and height
-    lowerLeftTextOriginX = upperLeftTextOriginX
-    lowerLeftTextOriginY = upperLeftTextOriginY + textSizeHeight
-
     # write the text on the image
-    cv2.putText(openCVImage, resultText, (lowerLeftTextOriginX, lowerLeftTextOriginY), fontFace, fontScale, SCALAR_BLUE, fontThickness)
+    for i, line in enumerate(resultText.split('\n')):
+        # calculate the lower left origin of the text area based on the text area center, width, and height
+        lowerLeftTextOriginX = upperLeftTextOriginX
+        lowerLeftTextOriginY = upperLeftTextOriginY + i * 2 * textSizeHeight
+        #cv2.putText(img, line, (50, y), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+        cv2.putText(openCVImage, line, (lowerLeftTextOriginX, lowerLeftTextOriginY), fontFace, fontScale,
+                    SCALAR_BLUE, fontThickness)
+
 # end function
 
 
