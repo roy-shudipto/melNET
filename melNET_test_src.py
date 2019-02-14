@@ -65,7 +65,6 @@ def main(test_path, weight_path, save_performance, show_detection, ground_truth,
             f.write(',')
         f.write('Prediction, Truth, Match\n')
 
-
     with tf.Session() as sess:
         # for each file in the test images directory . . .
         for fileName in os.listdir(TEST_IMAGES_DIR):
@@ -124,8 +123,8 @@ def main(test_path, weight_path, save_performance, show_detection, ground_truth,
                 strClassification = classifications[prediction]
 
                 # if the classification (obtained from the directory name) ends with the letter "s", remove the "s" to change from plural to singular
-                if strClassification.endswith("s"):
-                    strClassification = strClassification[:-1]
+                #if strClassification.endswith("s"):
+                    #strClassification = strClassification[:-1]
                 # end if
 
                 # get confidence, then get confidence rounded to 2 places after the decimal
@@ -145,7 +144,7 @@ def main(test_path, weight_path, save_performance, show_detection, ground_truth,
                     if show_detection:
                         cv2.imshow(fileName, openCVImage)
                         # pause
-                        cv2.waitKey(1000)
+                        cv2.waitKey(0)
                         # after a key is pressed, close the current window to prep for the next time around
                         cv2.destroyAllWindows()
                     # mark that we've show the most likely prediction at this point so the additional information in
@@ -160,6 +159,8 @@ def main(test_path, weight_path, save_performance, show_detection, ground_truth,
     # end with
     if save_performance:
         f.close()
+
+    return classifications
 
     # write the graph to file so we can view with TensorBoard
     '''tfFileWriter = tf.summary.FileWriter(os.getcwd())

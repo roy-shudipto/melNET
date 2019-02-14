@@ -1,5 +1,6 @@
 # importing scripts
 import melNET_test_src
+import melNET_confusion_mat
 
 # importing libs
 import os
@@ -66,8 +67,8 @@ def main():
                         for folder in folder_names:
                             ground_truth = re.sub(r'[^a-z0-9]+', ' ', str(folder).lower())
                             class_path = test_path + "/" + folder
-                            melNET_test_src.main(class_path, weight_path, save_performance, show_detection,
-                                                 ground_truth, test_path)
+                            classes = melNET_test_src.main(class_path, weight_path, save_performance, show_detection,
+                                                           ground_truth, test_path)
                         if save_performance:
                             merge_csv(test_path)
                     else:
@@ -84,7 +85,8 @@ def main():
                     for folder in folder_names:
                         ground_truth = re.sub(r'[^a-z0-9]+', ' ', str(folder).lower())
                         class_path = test_path + "/" + folder
-                        melNET_test_src.main(class_path, weight_path, save_performance, show_detection, ground_truth, test_path)
+                        classes = melNET_test_src.main(class_path, weight_path, save_performance, show_detection,
+                                                       ground_truth, test_path)
                     if save_performance:
                         merge_csv(test_path)
                 else:
@@ -98,6 +100,9 @@ def main():
     else:
         print("melNET has not been TESTED!")
         exit()
+
+    if save_performance and len(classes) == 2:
+        melNET_confusion_mat.main(classes)
 #######################################################################################################################
 
 
