@@ -16,7 +16,7 @@ def main():
     global applied
     applied = False
 
-    def apply_button_applied():
+    def apply_but ton_applied():
         root.destroy()
         global applied
         applied = True

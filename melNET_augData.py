@@ -5,6 +5,7 @@ import os.path
 import os
 from tkinter import *
 import shutil
+import blur_detection
 
 
 # Main >>>
@@ -26,6 +27,7 @@ def main():
         pressed = False
 
     # Check Box variables
+    _del_blur = BooleanVar()
     _original = BooleanVar()
     _histEqualization = BooleanVar()
     _dilation = BooleanVar()
@@ -36,20 +38,24 @@ def main():
     _rotate = BooleanVar()
     _five_fold = BooleanVar()
     _rotate_ang = IntVar(0)
+    _blur_thresh = IntVar(0)
 
     # UI Creation
-    Checkbutton(root, text="Original", variable=_original).grid(row=0, sticky=W)
-    Checkbutton(root, text="Hist. Equalization", variable=_histEqualization).grid(row=1, sticky=W)
-    Checkbutton(root, text="Dilation", variable=_dilation).grid(row=2, sticky=W)
-    Checkbutton(root, text="Erosion", variable=_erosion).grid(row=3, sticky=W)
-    Checkbutton(root, text="Blur", variable=_blur).grid(row=4, sticky=W)
-    Checkbutton(root, text="Sharpen", variable=_sharpen).grid(row=5, sticky=W)
-    Checkbutton(root, text="Mirror", variable=_mirror).grid(row=6, sticky=W)
-    Checkbutton(root, text="Rotate All", variable=_rotate).grid(row=7, sticky=W)
+    Checkbutton(root, text="Detect & Delete Blurry Images", variable=_del_blur).grid(row=0, sticky=W)
+    Checkbutton(root, text="Original", variable=_original).grid(row=1, sticky=W)
+    Checkbutton(root, text="Hist. Equalization", variable=_histEqualization).grid(row=2, sticky=W)
+    Checkbutton(root, text="Dilation", variable=_dilation).grid(row=3, sticky=W)
+    Checkbutton(root, text="Erosion", variable=_erosion).grid(row=4, sticky=W)
+    Checkbutton(root, text="Blur", variable=_blur).grid(row=5, sticky=W)
+    Checkbutton(root, text="Sharpen", variable=_sharpen).grid(row=6, sticky=W)
+    Checkbutton(root, text="Mirror", variable=_mirror).grid(row=7, sticky=W)
+    Checkbutton(root, text="Rotate All", variable=_rotate).grid(row=8, sticky=W)
 
-    Label(root, text="Angle Span in Degrees: ").grid(row=7, column=2)
-    Label(root, text="(Default: 45)").grid(row=8, column=2)
-    Entry(root, textvariable=_rotate_ang).grid(row=7, column=3)
+    Label(root, text="Angle Span in Degrees: ").grid(row=8, column=2)
+    Label(root, text="(Default: 45)").grid(row=9, column=2)
+    Entry(root, textvariable=_rotate_ang).grid(row=8, column=3)
+    Label(root, text="Blur Threshold (Default=7):").grid(row=0, column=2)
+    Entry(root, textvariable=_blur_thresh).grid(row=0, column=3)
 
     Checkbutton(root, text="Five-Fold   (Default: Single-Fold)", variable=_five_fold).grid(row=10, sticky=W)
     Button(root, text="Quit", command=quit_button_pressed, width=15).grid(row=11, column=2, sticky=W)
@@ -57,9 +63,9 @@ def main():
 
     root.mainloop()
 
-
     # Checking [Start] status
     if pressed:
+        del_blur = _del_blur.get()
         original = _original.get()
         histEqualization = _histEqualization.get()
         dilation = _dilation.get()
@@ -71,6 +77,7 @@ def main():
         global five_fold
         five_fold = _five_fold.get()
         rot_ang = _rotate_ang.get()
+        blur_thresh = _blur_thresh.get()
 
         if (original is False and histEqualization is False and dilation is False and
                 erosion is False and blur is False and sharpen is False and mirror is False):
@@ -89,6 +96,12 @@ def main():
             rotationAngle = 45  # Default: 45
     else:
         rotationAngle = None
+
+    # Detect and Delete blurry images
+    if del_blur:
+        if blur_thresh is 0:
+            blur_thresh = 7
+        blur_detection.main(blur_thresh)
 
     # Number of folds
     global fold_num
