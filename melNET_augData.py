@@ -5,6 +5,7 @@ import os.path
 import os
 from tkinter import *
 import shutil
+
 import blur_detection
 
 
@@ -275,10 +276,27 @@ def file_naming(_img, process_initial, _folder, _set_counter):
     if rotationAngle is not None:
         # Rotation Code
         for angle in range(0, 360, rotationAngle):
-            dim = _img.shape
             _scaleFactor = 1
-            _rotationMatrix = cv2.getRotationMatrix2D((dim[1] / 2, dim[0] / 2), angle, _scaleFactor)
-            _imgRotated = cv2.warpAffine(_img, _rotationMatrix, (dim[1], dim[0]), flags=cv2.INTER_LINEAR,
+            (h, w) = _img.shape[:2]
+            (cX, cY) = (w // 2, h // 2)
+
+            # grab the rotation matrix (applying the negative of the
+            # angle to rotate clockwise), then grab the sine and cosine
+            # (i.e., the rotation components of the matrix)
+            M = cv2.getRotationMatrix2D((cX, cY), angle, _scaleFactor)
+
+            cos = np.abs(M[0, 0])
+            sin = np.abs(M[0, 1])
+
+            # compute the new bounding dimensions of the image
+            nW = int((h * sin) + (w * cos))
+            nH = int((h * cos) + (w * sin))
+
+            # adjust the rotation matrix to take into account translation
+            M[0, 2] += (nW / 2) - cX
+            M[1, 2] += (nH / 2) - cY
+
+            _imgRotated = cv2.warpAffine(_img, M, (nW, nH), flags=cv2.INTER_LINEAR,
                                          borderMode=cv2.BORDER_REFLECT_101)
             _savingName = dst_root + _folder + "/" + _folder + "_" + str(name_counter) + "_" \
                                    + process_initial + "_Rot_" + str(angle) + ".jpg"
