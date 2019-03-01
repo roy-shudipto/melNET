@@ -6,7 +6,7 @@ import os
 from tkinter import *
 import shutil
 
-import blur_detection
+import melNET_blur_detection
 
 
 # Main >>>
