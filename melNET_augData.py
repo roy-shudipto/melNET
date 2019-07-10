@@ -38,6 +38,7 @@ def main():
     _mirror = BooleanVar()
     _rotate = BooleanVar()
     _five_fold = BooleanVar()
+    _resize = BooleanVar()
     _rotate_ang = IntVar(0)
     _blur_thresh = IntVar(0)
 
@@ -51,6 +52,7 @@ def main():
     Checkbutton(root, text="Sharpen", variable=_sharpen).grid(row=6, sticky=W)
     Checkbutton(root, text="Mirror", variable=_mirror).grid(row=7, sticky=W)
     Checkbutton(root, text="Rotate All", variable=_rotate).grid(row=8, sticky=W)
+    Checkbutton(root, text="Resize (400 x 400)", variable=_resize).grid(row=10, sticky=W)
 
     Label(root, text="Angle Span in Degrees: ").grid(row=8, column=2)
     Label(root, text="(Default: 45)").grid(row=9, column=2)
@@ -58,9 +60,9 @@ def main():
     Label(root, text="Blur Threshold (Default=7):").grid(row=0, column=2)
     Entry(root, textvariable=_blur_thresh).grid(row=0, column=3)
 
-    Checkbutton(root, text="Five-Fold   (Default: Single-Fold)", variable=_five_fold).grid(row=10, sticky=W)
-    Button(root, text="Quit", command=quit_button_pressed, width=15).grid(row=11, column=2, sticky=W)
-    Button(root, text="Apply", command=apply_button_pressed, width=15).grid(row=11, column=3, sticky=W)
+    Checkbutton(root, text="Five-Fold   (Default: Single-Fold)", variable=_five_fold).grid(row=11, sticky=W)
+    Button(root, text="Quit", command=quit_button_pressed, width=15).grid(row=12, column=2, sticky=W)
+    Button(root, text="Apply", command=apply_button_pressed, width=15).grid(row=12, column=3, sticky=W)
 
     root.mainloop()
 
@@ -75,6 +77,7 @@ def main():
         sharpen = _sharpen.get()
         mirror = _mirror.get()
         rotate = _rotate.get()
+        resize = _resize.get()
         global five_fold
         five_fold = _five_fold.get()
         rot_ang = _rotate_ang.get()
@@ -102,7 +105,7 @@ def main():
     if del_blur:
         if blur_thresh is 0:
             blur_thresh = 7
-        blur_detection.main(blur_thresh)
+        melNET_blur_detection.main(blur_thresh)
 
     # Number of folds
     global fold_num
@@ -139,6 +142,12 @@ def main():
 
         for img in image_list:
             set_counter += 1
+
+            # Resizing
+            if resize:
+                width = 400
+                height = 400
+                img = cv2.resize(img, (width, height))
 
             # Original Saving Code
             if original:
