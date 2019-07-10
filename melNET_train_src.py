@@ -271,7 +271,7 @@ def main(train_dir, weight_dir, learning_rate, batch_size, iteration):
             intermediate_frequency = INTERMEDIATE_STORE_FREQUENCY
 
             if (intermediate_frequency > 0 and (i % intermediate_frequency == 0) and i > 0):
-                intermediate_file_name = (INTERMEDIATE_OUTPUT_GRAPHS_DIR + 'intermediate_' + str(i) + '.pb')
+                intermediate_file_name = (INTERMEDIATE_OUTPUT_GRAPHS_DIR + '/intermediate_' + str(i) + '.pb')
                 tf.logging.info('Save intermediate result to : ' + intermediate_file_name)
                 save_graph_to_file(sess, graph, intermediate_file_name)
             # end if
