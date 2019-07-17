@@ -11,3 +11,5 @@
 09) Set ‘Python Interpreter’ to the new Conda Environment (E.g.:melNET_env)
 10) Go to Run >> Run >> melNET  
 11) Follow the prompt! 
+
+N.B.: Follow the provided pdf for more detail

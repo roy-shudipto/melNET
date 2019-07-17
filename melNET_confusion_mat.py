@@ -65,7 +65,7 @@ def main(classes):
         fold_num = 5
         if five_fold:
             for fold in range(fold_num):
-                root = os.getcwd() + "/aug_Data/Five_Fold_(Aug)/Fold_"+str(fold+1)+"/Test"
+                root = os.getcwd() + "/Results/Fold_0"+str(fold+1)
                 result_path = root + "/_result.csv"
                 conf_mat_path = root + "/conf_mat.csv"
                 error_path = root + "/error_analysis.csv"
@@ -73,9 +73,10 @@ def main(classes):
                 conf_mat_make(result_path, conf_mat_path, error_path, err_thresh, pos_class, neg_class)
 
         else:
-            result_path = os.getcwd() + "/aug_Data/Single_Fold_(Aug)/Test/_result.csv"
-            conf_mat_path = os.getcwd() + "/aug_Data/Single_Fold_(Aug)/Test/conf_mat.csv"
-            error_path = os.getcwd() + "/aug_Data/Single_Fold_(Aug)/Test/error_analysis.csv"
+            root = os.getcwd() + "/Results/Fold_01"
+            result_path = root + "/_result.csv"
+            conf_mat_path = root + "/conf_mat.csv"
+            error_path = root + "/error_analysis.csv"
             err_thresh = 70
             conf_mat_make(result_path, conf_mat_path, error_path, err_thresh, pos_class, neg_class)
 

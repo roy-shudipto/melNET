@@ -285,6 +285,8 @@ def file_naming(_img, process_initial, _folder, _set_counter):
     if rotationAngle is not None:
         # Rotation Code
         for angle in range(0, 360, rotationAngle):
+            """
+            # No Artifact Code:
             _scaleFactor = 1
             (h, w) = _img.shape[:2]
             (cX, cY) = (w // 2, h // 2)
@@ -307,6 +309,14 @@ def file_naming(_img, process_initial, _folder, _set_counter):
 
             _imgRotated = cv2.warpAffine(_img, M, (nW, nH), flags=cv2.INTER_LINEAR,
                                          borderMode=cv2.BORDER_REFLECT_101)
+            """
+            # Artifact Code:
+            dim = _img.shape
+            _scaleFactor = 1
+            rotationMatrix = cv2.getRotationMatrix2D((dim[1] / 2, dim[0] / 2), angle, _scaleFactor)
+            _imgRotated = cv2.warpAffine(_img, rotationMatrix, (dim[1], dim[0]), flags=cv2.INTER_LINEAR,
+                                         borderMode=cv2.BORDER_REFLECT_101)
+
             _savingName = dst_root + _folder + "/" + _folder + "_" + str(name_counter) + "_" \
                                    + process_initial + "_Rot_" + str(angle) + ".jpg"
             cv2.imwrite(_savingName, _imgRotated)

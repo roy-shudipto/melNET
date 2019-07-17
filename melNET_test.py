@@ -53,12 +53,19 @@ def main():
         accessories_path = os.getcwd() + "/Accessories"   # same name in malNET_train_src
         aug_data_path = os.getcwd() + "/aug_Data"
 
+        result_root = os.getcwd() + "/Results"
+        if tf.gfile.Exists(result_root):
+            tf.gfile.DeleteRecursively(result_root)
+        tf.gfile.MakeDirs(result_root)
+
         # Starting Test
         if tf.gfile.Exists(accessories_path) and tf.gfile.Exists(aug_data_path):
             if five_fold:
                 fold_num = 5  # Five-Fold
                 root = aug_data_path + "/Five_Fold_(Aug)"
                 for num in range(fold_num):
+                    result_path = result_root + "/Fold_0" + str(num+1)
+                    tf.gfile.MakeDirs(result_path)
                     test_path = root + "/Fold_" + str(num+1) + "/Test"
                     weight_path = accessories_path + "/Five_Fold_Trained/Trained_Fold_" + str(num+1)
                     delete_all_csv(test_path)  # Deleting old results
@@ -68,14 +75,16 @@ def main():
                             ground_truth = re.sub(r'[^a-z0-9]+', ' ', str(folder).lower())
                             class_path = test_path + "/" + folder
                             classes = melNET_test_src.main(class_path, weight_path, save_performance, show_detection,
-                                                           ground_truth, test_path)
+                                                           ground_truth, result_path)
                         if save_performance:
-                            merge_csv(test_path)
+                            merge_csv(result_path)
                     else:
                         print("Either [Test Data] or [Weight] is NOT available!")
                         exit()
 
             else:  # Single-Fold
+                result_path = result_root + "/Fold_01"
+                tf.gfile.MakeDirs(result_path)
                 root = aug_data_path + "/Single_Fold_(Aug)"
                 test_path = root + "/Test"
                 weight_path = accessories_path + "/Single_Fold_Trained"
@@ -86,7 +95,7 @@ def main():
                         ground_truth = re.sub(r'[^a-z0-9]+', ' ', str(folder).lower())
                         class_path = test_path + "/" + folder
                         classes = melNET_test_src.main(class_path, weight_path, save_performance, show_detection,
-                                                       ground_truth, test_path)
+                                                       ground_truth, result_path)
                     if save_performance:
                         merge_csv(test_path)
                 else:
