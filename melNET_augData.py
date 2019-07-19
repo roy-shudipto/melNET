@@ -48,7 +48,7 @@ def main():
     Checkbutton(root, text="Hist. Equalization", variable=_histEqualization).grid(row=2, sticky=W)
     Checkbutton(root, text="Dilation", variable=_dilation).grid(row=3, sticky=W)
     Checkbutton(root, text="Erosion", variable=_erosion).grid(row=4, sticky=W)
-    Checkbutton(root, text="Blur", variable=_blur).grid(row=5, sticky=W)
+    Checkbutton(root, text="Median Filter", variable=_blur).grid(row=5, sticky=W)
     Checkbutton(root, text="Sharpen", variable=_sharpen).grid(row=6, sticky=W)
     Checkbutton(root, text="Mirror", variable=_mirror).grid(row=7, sticky=W)
     Checkbutton(root, text="Rotate All", variable=_rotate).grid(row=8, sticky=W)
